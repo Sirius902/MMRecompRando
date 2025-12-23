@@ -11,7 +11,7 @@ RECOMP_IMPORT(".", u32 rando_solo_get_seed_name(u32 seed_index, char* out, u32 m
 // Returns the actual string length
 RECOMP_IMPORT(".", u32 rando_solo_get_generation_date(u32 seed_index, char* out, u32 max_length));
 
-RECOMP_IMPORT(".", u32 rando_init_solo(u32 seed_index));
+RECOMP_IMPORT(".", u32 rando_init_solo(char* save_path, u32 seed_index));
 
 RandoSoloMenu solo_menu;
 
@@ -210,7 +210,8 @@ static void backPressed(RecompuiResource resource, const RecompuiEventData* data
 
 static void startPressed(RecompuiResource resource, const RecompuiEventData* data, void* userdata) {
     if (data->type == UI_EVENT_CLICK) {
-        if (rando_init_solo(solo_menu.selected_entry)) {
+        u8* save_path = recomp_get_save_file_path();
+        if (rando_init_solo(save_path, solo_menu.selected_entry)) {
             recomp_printf("Started successfully\n");
             recompui_hide_context(solo_menu.context);
             randoStart(false);
@@ -221,6 +222,7 @@ static void startPressed(RecompuiResource resource, const RecompuiEventData* dat
             randoEmitErrorNotification("Failed to load seed, file may be corrupted");
             recompui_open_context(solo_menu.context);
         }
+        recomp_free(save_path);
     }
 }
 

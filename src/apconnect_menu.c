@@ -3,7 +3,7 @@
 #include "recompconfig.h"
 #include "recomputils.h"
 
-RECOMP_IMPORT(".", bool rando_init(char* address, char* player_name, char* password));
+RECOMP_IMPORT(".", bool rando_init(char* save_path, char* address, char* player_name, char* password));
 
 ApconnectMenu connect_menu;
 
@@ -12,7 +12,9 @@ static void connectPressed(RecompuiResource resource, const RecompuiEventData* d
         char* server_text = recompui_get_input_text(connect_menu.server_textinput);
         char* slot_text = recompui_get_input_text(connect_menu.slot_textinput);
         char* password_text = recompui_get_input_text(connect_menu.password_textinput);
-        bool success = rando_init(server_text, slot_text, password_text);
+        u8* save_path = recomp_get_save_file_path();
+        bool success = rando_init(save_path, server_text, slot_text, password_text);
+        recomp_free(save_path);
 
         if (success) {
             randoStart(true);
